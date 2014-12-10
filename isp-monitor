@@ -48,7 +48,7 @@ def report():
     for timestamp, entries_it in itertools.groupby(log, lambda x: x[0].replace(second=0, microsecond=0)):
       entries = list(entries_it)
       count_total = len(entries)
-      count_failed = len(filter(lambda x: x[2] is not None, entries))
+      count_failed = len(filter(lambda x: x[2] is None, entries))
       latency_avg = list_average(map(lambda x: x[2], filter(lambda x: x[2] is not None, entries)))
       log_aggregated_file.write('%s;%d;%d;%f\n' % (timestamp, count_total, count_failed, latency_avg))
 
