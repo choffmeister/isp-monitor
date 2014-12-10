@@ -4,12 +4,15 @@ A simple script to monitor your internet connection over time.
 
 ## Usage
 
+You must run this script as root since else Python is not allowed to send ICMP packets:
+
 ~~~ bash
+
 # start a monitoring process to regulary ping some well known public servers
-$ ./isp-monitor monitor
+$ sudo ./isp-monitor monitor
 
 # generate a plot
-$ ./isp-monitor report
+$ sudo ./isp-monitor report
 ~~~
 
 ## Run as daemon

@@ -1,32 +1,18 @@
 import datetime
-import re
-import subprocess
+import os
+import ping_lib
+import sys
 
-def ping(ip):
-  def run_ping(ip, count, wait):
-    process = subprocess.Popen(['ping', '-c%d' % count, '-W%d' % wait, ip], stdout=subprocess.PIPE)
-    out, err = process.communicate()
-    return out
+nullout = open(os.devnull, 'w')
+original_stdout = sys.stdout
 
-  def extract_packet_loss(ping_out):
-    try:
-      match = re.search('(\d+(\.\d+)?)% packet loss', ping_out, re.IGNORECASE)
-      return float(match.group(1))
-    except Exception, e:
-      return None
-
-  def extract_rounttrip_time(ping_out):
-    try:
-      match = re.search('(\d+(\.\d+)?)/(\d+(\.\d+)?)/(\d+(\.\d+)?)/(\d+(\.\d+)?)', ping_out, re.IGNORECASE)
-      return (float(match.group(1)), float(match.group(3)), float(match.group(5)))
-    except Exception, e:
-      return (None, None, None)
-
+def ping(ip, timeout = 1000):
+  sys.stdout = nullout
   timestamp = datetime.datetime.now()
-  ping_out = run_ping(ip, 1, 1.0)
-  packet_loss = extract_packet_loss(ping_out)
-  latency_min, latency_avg, latency_max = extract_rounttrip_time(ping_out)
-  return (timestamp, ip, latency_avg)
+  ping_obj = ping_lib.Ping(ip, timeout=timeout)
+  latency = ping_obj.do()
+  sys.stdout = original_stdout
+  return (timestamp, ip, latency)
 
 def to_csv_line(timestamp, ip, latency):
   return '%s;%s;%s\n' % (timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'), ip, latency)
