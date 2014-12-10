@@ -11,7 +11,6 @@ import lib.gnuplot as gnuplot
 ips = [
   '8.8.8.8', # google-public-dns-a.google.com.
   '8.8.4.4', # google-public-dns-b.google.com.
-  '139.130.4.5', # ns1.telstra.net.
   '194.0.0.53', # a.nic.de.
 ]
 
