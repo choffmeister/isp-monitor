@@ -15,4 +15,4 @@ set y2tics 10
 
 plot \
   "target/log.aggregated.csv" using 1:4 title "Average latency" with lines axes x1y1, \
-  "target/log.aggregated.csv" using 1:(100-$3/$2*100) title "Packet loss" with lines axes x1y2
+  "target/log.aggregated.csv" using 1:($3/$2*100) title "Packet loss" with lines axes x1y2
