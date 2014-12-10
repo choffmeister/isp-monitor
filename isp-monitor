@@ -52,7 +52,7 @@ def report():
   gnuplot.run(os.path.join(working_dir, 'graph.plot'), working_dir)
 
 if len(sys.argv) == 2 and sys.argv[1] == 'monitor':
-  daemon.run(monitor, 1.0)
+  daemon.run(monitor, 5.0)
 elif len(sys.argv) == 2 and sys.argv[1] == 'report':
   report()
 else:
