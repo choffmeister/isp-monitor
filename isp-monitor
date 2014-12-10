@@ -22,7 +22,10 @@ log_path = os.path.join(target_dir, 'log.csv')
 log_aggregated_path = os.path.join(target_dir, 'log.aggregated.csv')
 
 def list_average(list):
-  return float(sum(list)) / float(len(list))
+  if len(list) > 0:
+    return float(sum(list)) / float(len(list))
+  else:
+    return float('inf')
 
 def monitor():
   global ips
