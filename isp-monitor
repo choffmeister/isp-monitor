@@ -7,6 +7,7 @@ import sys
 import lib.daemon as daemon
 import lib.ping as ping
 import lib.gnuplot as gnuplot
+import lib.misc as misc
 
 ips = [
   '8.8.8.8', # google-public-dns-a.google.com.
@@ -19,12 +20,6 @@ target_dir = os.path.join(working_dir, 'target')
 if not os.path.exists(target_dir): os.makedirs(target_dir)
 log_path = os.path.join(target_dir, 'log.csv')
 log_aggregated_path = os.path.join(target_dir, 'log.aggregated.csv')
-
-def list_average(list):
-  if len(list) > 0:
-    return float(sum(list)) / float(len(list))
-  else:
-    return float('inf')
 
 def monitor():
   global ips
@@ -44,11 +39,11 @@ def report():
     log = map(lambda x: ping.from_csv_line(x), log_file.readlines())
 
   with open(log_aggregated_path, 'w') as log_aggregated_file:
-    for timestamp, entries_it in itertools.groupby(log, lambda x: x[0].replace(second=0, microsecond=0)):
+    for timestamp, entries_it in itertools.groupby(log, lambda x: misc.round_datetime(x[0], mins=5)):
       entries = list(entries_it)
       count_total = len(entries)
       count_failed = len(filter(lambda x: x[2] is None, entries))
-      latency_avg = list_average(map(lambda x: x[2], filter(lambda x: x[2] is not None, entries)))
+      latency_avg = misc.list_average(map(lambda x: x[2], filter(lambda x: x[2] is not None, entries)))
       log_aggregated_file.write('%s;%d;%d;%f\n' % (timestamp, count_total, count_failed, latency_avg))
 
   gnuplot.run(os.path.join(working_dir, 'graph.plot'), working_dir)
